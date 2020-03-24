@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -x
 TRY_LOOP="20"
 
 : "${REDIS_HOST:="redis"}"
@@ -22,7 +22,7 @@ else
 fi
 
 # Defaults and back-compat
-: "${AIRFLOW__CORE__FERNET_KEY:=${FERNET_KEY:=$(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")}}"
+: "${AIRFLOW__CORE__FERNET_KEY:=${FERNET_KEY:=DlMltFwFwXlvp9SGh27VQ_nCkCm6-0wugA2Tb-YVgr8=}}"
 : "${AIRFLOW__CORE__EXECUTOR:=${EXECUTOR:-Sequential}Executor}"
 
 export \
@@ -32,6 +32,7 @@ export \
   AIRFLOW__CORE__FERNET_KEY \
   AIRFLOW__CORE__LOAD_EXAMPLES \
   AIRFLOW__CORE__SQL_ALCHEMY_CONN \
+
 
 
 # Load DAGs exemples (default: Yes)
@@ -83,12 +84,12 @@ fi
 
 case "$1" in
   webserver)
+    airflow initdb
     # To give the scheduler time to run initdb.
-    sleep 10
+    sleep 20
     exec airflow "$@"
     ;;
   scheduler)
-    airflow initdb
     if [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
       # With the "Local" executor it should all run in one container.
       airflow webserver &
@@ -97,7 +98,7 @@ case "$1" in
     ;;
   worker)
     # To give the scheduler time to run initdb.
-    sleep 10
+    sleep 20
     exec airflow "$@"
     ;;
   flower)
