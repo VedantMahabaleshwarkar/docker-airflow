@@ -38,7 +38,7 @@ export \
 # Load DAGs exemples (default: Yes)
 if [[ -z "$AIRFLOW__CORE__LOAD_EXAMPLES" && "${LOAD_EX:=n}" == n ]]
 then
-  AIRFLOW__CORE__LOAD_EXAMPLES=False
+  AIRFLOW__CORE__LOAD_EXAMPLES = True
 fi
 
 # Install custom python package if requirements.txt is present
@@ -76,6 +76,7 @@ if [ "$AIRFLOW__CORE__EXECUTOR" != "SequentialExecutor" ]; then
   fi
   wait_for_port "$DB_TYPE" "$SQL_HOST" "$SQL_PORT"
 fi
+echo "export AIRFLOW__CORE__SQL_ALCHEMY_CONN=${AIRFLOW__CORE__SQL_ALCHEMY_CONN}" >> ~/.profile
 
 if [ "$AIRFLOW__CORE__EXECUTOR" = "CeleryExecutor" ]; then
   AIRFLOW__CELERY__BROKER_URL="redis://$REDIS_PREFIX$REDIS_HOST:$REDIS_PORT/1"
