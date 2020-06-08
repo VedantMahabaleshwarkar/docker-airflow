@@ -78,6 +78,7 @@ RUN set -ex \
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 
+RUN chmod g+w /etc/passwd
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 RUN chgrp -R 0 ${AIRFLOW_USER_HOME} && chmod -R g+rwX ${AIRFLOW_USER_HOME}
 
